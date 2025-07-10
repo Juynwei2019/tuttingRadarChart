@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>互動式雷達圖（拉桿版）</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    canvas { max-width: 500px; }
+    .form-group { margin-bottom: 15px; }
+    .form-label { display: flex; justify-content: space-between; }
+    input[type=range] { width: 100%; }
+  </style>
+</head>
+<body>
+
+  <h2>TUTTING雷達圖</h2>
+
+  <div id="input-area">
+    <div class="form-group">
+      <div class="form-label">
+        <label for="雕塑程度">雕塑程度</label>
+        <span id="雕塑程度值">3</span>
+      </div>
+      <input type="range" id="雕塑程度" min="0" max="5" step="1" value="3" oninput="updateValue('雕塑程度')">
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">
+        <label for="空間運用">空間運用</label>
+        <span id="空間運用值">3</span>
+      </div>
+      <input type="range" id="空間運用" min="0" max="5" step="1" value="3" oninput="updateValue('空間運用')">
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">
+        <label for="肢體廣度">肢體廣度</label>
+        <span id="肢體廣度值">3</span>
+      </div>
+      <input type="range" id="肢體廣度" min="0" max="5" step="1" value="3" oninput="updateValue('肢體廣度')">
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">
+        <label for="幾何連結度">幾何連結度</label>
+        <span id="幾何連結度值">3</span>
+      </div>
+      <input type="range" id="幾何連結度" min="0" max="5" step="1" value="3" oninput="updateValue('幾何連結度')">
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">
+        <label for="幾何使用率">幾何使用率</label>
+        <span id="幾何使用率值">3</span>
+      </div>
+      <input type="range" id="幾何使用率" min="0" max="5" step="1" value="3" oninput="updateValue('幾何使用率')">
+    </div>
+	
+	<div class="form-group">
+      <div class="form-label">
+        <label for="">節奏契合程度</label>
+        <span id="節奏契合程度值">3</span>
+      </div>
+      <input type="range" id="節奏契合程度" min="0" max="5" step="1" value="3" oninput="updateValue('節奏契合程度')">
+    </div>
+
+  </div>
+
+  <canvas id="radarChart"></canvas>
+
+  <script>
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const labels = ['雕塑程度', '空間運用', '肢體廣度', '幾何連結度', '幾何使用率','節奏契合程度'];
+
+    function getValues() {
+      return labels.map(label => parseInt(document.getElementById(label).value));
+    }
+
+    function updateValue(label) {
+      document.getElementById(label + '值').textContent = document.getElementById(label).value;
+      updateChart(); // 即時更新雷達圖
+    }
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: '幾何值（0~5）',
+        data: getValues(),
+        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        borderColor: 'rgba(0, 255, 255, 1)',
+        borderWidth: 3
+      }]
+    };
+
+    const config = {
+      type: 'radar',
+      data: data,
+      options: {
+        responsive: true,
+        scales: {
+          r: {
+            suggestedMin: 0,
+            suggestedMax: 5,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    };
+
+    const radarChart = new Chart(ctx, config);
+
+    function updateChart() {
+      radarChart.data.datasets[0].data = getValues();
+      radarChart.update();
+    }
+  </script>
+
+</body>
+</html>
